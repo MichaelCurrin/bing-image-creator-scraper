@@ -1,7 +1,11 @@
-import bs4
-import requests
+"""
+Bing AI scraper app.
+"""
 import re
 from pathlib import Path
+
+import bs4
+import requests
 
 URLS = Path("var") / "outputs" / "firefox_urls.txt"
 IMG_OUTPUT_PATH = Path("var") / "outputs" / "creations"
