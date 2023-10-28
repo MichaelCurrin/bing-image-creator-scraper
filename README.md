@@ -58,3 +58,8 @@ The last bit strips out everything from query parameters (`?`) onwards and remov
 1. click the menu (three dots).
 1. Click _Export browsing history_.
 1. Click to confirm, pick a location.
+
+
+## License
+
+No license is provided - this repo is closed for reuse and sharing of code except by anyone added as a collaborator.
