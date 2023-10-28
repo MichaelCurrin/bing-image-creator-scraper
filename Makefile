@@ -37,4 +37,4 @@ firefox:
 	sqlite3 $(FIREFOX_INPUT) $(FIREFOX_SQL_QUERY) | cut -f1 -d? | sort | uniq > $(FIREFOX_OUTPUT)
 
 app:
-	python -m bing_ai_scraper
+	python -m imagescraper
