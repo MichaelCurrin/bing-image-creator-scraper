@@ -1,0 +1,4 @@
+var/inputs/*
+var/outputs/*
+
+__pycache__/
