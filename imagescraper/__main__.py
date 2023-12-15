@@ -10,9 +10,9 @@ import sys
 
 import bs4
 
-from . import files
+from . import files, process_html
 
-from . import download, process
+from . import download
 from .config import FIREFOX_URLS_PATH, EDGE_URLS_PATH, HEADERS
 
 
@@ -21,7 +21,7 @@ def download_for_creation_page(url: str, html: str):
     Request images for creation page HTML and store them, with creation metadata.
     """
     soup = bs4.BeautifulSoup(html, "html.parser")
-    prompt, image_urls = process.process_creation_page(url, soup)
+    prompt, image_urls = process_html.process_creation_page(url, soup)
 
     download.download_images(prompt, url, image_urls)
 

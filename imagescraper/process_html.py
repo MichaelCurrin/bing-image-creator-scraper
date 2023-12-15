@@ -1,5 +1,5 @@
 """
-Process module.
+HTML processing module.
 """
 import bs4
 
