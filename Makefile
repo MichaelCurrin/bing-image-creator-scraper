@@ -77,18 +77,21 @@ firefox:
 
 	sqlite3 $(FIREFOX_INPUT_PATH) \
 		"SELECT url FROM moz_places WHERE url LIKE '$(BING_CREATE_URL)%'" \
-			| cut -f1 -d? | sort | uniq > $(FIREFOX_OUTPUT_PATH)
-	@echo "File created at: $(FIREFOX_OUTPUT_PATH)
-	@echo "With line count:"
-	@wc -l < $(FIREFOX_OUTPUT_PATH)
+			| cut -f1 -d? > $(FIREFOX_OUTPUT_PATH)
 
+	@echo "File created at: $(FIREFOX_OUTPUT_PATH)"
+	@echo "With line count:"
+	@wc -l < "$(FIREFOX_OUTPUT_PATH)"
+
+# Convert Edge CSV into URLs text file.
 edge:
 	[[ -f $(EDGE_INPUT_PATH) ]] || { echo 'Cannot find $(EDGE_INPUT_PATH)'; exit 1 ;}
 
 	grep '$(BING_CREATE_URL)' $(EDGE_INPUT_PATH) | cut -d ',' -f 2 > $(EDGE_OUTPUT_PATH)
+
 	@echo "File created at: $(EDGE_OUTPUT_PATH)"
 	@echo "With line count:"
-	@wc -l < $(EDGE_OUTPUT_PATH)
+	@wc -l < "$(EDGE_OUTPUT_PATH)"
 
 
 # Extract prompts and images from text file of URLs.
