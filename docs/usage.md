@@ -16,10 +16,22 @@ Follow the steps in [Browser history](browser-history.md) to prepare your data.
 
 ## Run
 
-Run application to scrape all data.
+Run application to scrape all data for text file of URLs.
 
 ```sh
 $ make app
+```
+
+Count your creations:
+
+```sh
+$ make count
+```
+
+Delete creations:
+
+```sh
+$ make delete
 ```
 
 
