@@ -26,7 +26,13 @@ def _read_file(path: Path) -> list[str]:
 def all_urls(firefox_path: Path, edge_path: Path) -> list[str]:
     """
     Read URLs from Firefox and Edge text files if they exist and return combined
-    URLs list (excluding duplicates.)
+    URLs list.
+
+    Query parameters will be removed.
+
+    Assume duplicates are possible within the files and across the files,
+    especially two identical URLs and the one has query parameters which
+    are meaningless for scraping purposes. e.g. '...891?FORM=GLP2CR'.
     """
     assert (
         firefox_path.exists() or edge_path.exists()
@@ -43,8 +49,8 @@ def all_urls(firefox_path: Path, edge_path: Path) -> list[str]:
         assert edge_urls, "Edge URLs text file cannot be empty"
         urls.extend(edge_urls)
 
-    if firefox_path.exists() and edge_path.exists():
-        unique_urls = set(urls)
-        urls = sorted(unique_urls)
+    urls = [url.split("?")[0] for url in urls]
+    unique_urls = set(urls)
+    urls = sorted(unique_urls)
 
     return urls
