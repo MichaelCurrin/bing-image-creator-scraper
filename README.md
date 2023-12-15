@@ -30,27 +30,27 @@ You should go through each browser on each computer where you use Bing Image Cre
 
 ### Firefox
 
-Go to this directory in Windows.
-
-```
-C:\Users\<username>\AppData\Roaming\Mozilla\Firefox\Profiles
-```
-
-Find your relevant profile directory.
-
-Find `places.sqlite`.
-
-Copy it into this repo to the `var/inputs` directory.
-
-Get relevant URLS out:
+Install SQLite3.
 
 ```sh
 sudo apt install sqlite3
 ```
 
-Run
-
-The last bit strips out everything from query parameters (`?`) onwards and removes duplicates.
+1. Go to this directory in Windows. Note that `AppData` is usually hidden so it's best to enter this path in your file browser.
+    ```
+    C:\Users\<username>\AppData\Roaming\Mozilla\Firefox\Profiles
+    ```
+1. Find the relevant directory for your profile and go into it.
+1. Find the `places.sqlite` file.
+1. Copy that file into this repo to the `var/inputs` directory.
+1. Get relevant URLs out and write to a text file using this command:
+    ```sh
+    make firefox
+    ```
+1. View the output file here:
+    ```
+    var/outputs/firefox_urls.txt
+    ```
 
 ### Edge
 
