@@ -64,7 +64,7 @@ t typecheck:
 	mypy $(APP_DIR)
 
 
-# Convert Firefox DB file into URLS text file.
+# Convert Firefox DB file into URLs text file.
 firefox:
 	[[ -f $(FIREFOX_INPUT) ]] || { echo 'Cannot find $(FIREFOX_INPUT)'; exit 1 ;}
 
