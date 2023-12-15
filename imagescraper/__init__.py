@@ -1,3 +1,3 @@
 """
-Initialiation module.
+Initialization module.
 """
