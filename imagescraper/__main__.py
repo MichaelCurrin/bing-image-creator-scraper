@@ -124,9 +124,9 @@ def slugify(value: str) -> str:
     return value
 
 
-def as_directory_name(title: str) -> str:
+def as_folder_name(title: str) -> str:
     """
-    Make a directory name as a short title and hash.
+    Make a folder name as a short title and hash.
 
     The first part is a short slug form of the title to keep it readable.
 
@@ -146,10 +146,10 @@ def as_directory_name(title: str) -> str:
 
 def download_images(title: str, image_urls: list[str]) -> None:
     """
-    Download image URLs for a creation page to a directory and make a text file
+    Download image URLs for a creation page to a folder and make a text file
     containing the prompt.
     """
-    folder_name = as_directory_name(title)
+    folder_name = as_folder_name(title)
     print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_PATH / folder_name
