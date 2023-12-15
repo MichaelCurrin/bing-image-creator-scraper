@@ -56,14 +56,13 @@ def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[
     Expect HTML for a page of 1-4 creations and return the prompt and image URLs.
     """
     prompt = _get_prompt(soup)
-    print("Prompt", prompt, "URL", url)
 
     image_urls = get_image_urls(soup, CSS_IMG_CLASS)
     if not image_urls:
         print("Trying another CSS selector")
         image_urls = get_image_urls(soup, CSS_IMG_CLASS_SINGLE)
 
-    assert image_urls, f"Expected at least one image URL for CSS selectos at {url}"
+    assert image_urls, f"Expected at least one image URL for CSS selectors at {url}"
 
     print("Image URLs", image_urls)
 
