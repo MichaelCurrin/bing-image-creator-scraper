@@ -1,8 +1,8 @@
 SHELL = /bin/bash
 APP_DIR = imagescraper
 
-FIREFOX_INPUT = var/inputs/places.sqlite
-FIREFOX_OUTPUT = var/outputs/firefox_urls.txt
+FIREFOX_INPUT = $(APP_DIR)/var/history_raw/places.sqlite
+FIREFOX_OUTPUT = $(APP_DIR)/var/history_processed/firefox_urls.txt
 FIREFOX_SQL_QUERY = "SELECT url FROM moz_places WHERE url LIKE 'https://www.bing.com/images/create/%'"
 DEBUG_TEST_URL = https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
 

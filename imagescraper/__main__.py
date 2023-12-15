@@ -14,11 +14,13 @@ from pathlib import Path
 import bs4
 import requests
 
+APP_DIR = Path(__file__)
+VAR_DIR = APP_DIR / Path("var")
+FIREFOX_URLS_PATH = VAR_DIR / "history_processed" / "firefox_urls.txt"
+IMG_OUTPUT_PATH = VAR_DIR / "creations"
 
-VAR_DIR = Path("var")
-FIREFOX_URLS_PATH = VAR_DIR / "outputs" / "firefox_urls.txt"
-IMG_OUTPUT_PATH = VAR_DIR / "outputs" / "creations"
 CREATION_DIR_NAME_MAX_LENGTH = 40
+TIMEOUT = 5
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101"
@@ -52,7 +54,7 @@ def get_html(url: str, headers: dict[str, str]) -> str:
     """
     Request HTML for a URL and return as text.
     """
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=TIMEOUT)
     assert response.ok, f"{response.status_code} - {response.reason} - {url}"
 
     html = response.text
@@ -97,7 +99,7 @@ def get_image_urls(soup: bs4.BeautifulSoup, class_name: str) -> list[str]:
             style=""
             height="270"
             width="270"
-            src="https://tse1.mm.bing.net/th/id/OIG.KrUfYLcUu0ihSU7Ucdgd?w=270&amp;h=270&amp;c=6&amp;r=0&amp;o=5&amp;pid=ImgGn"
+            src="https://tse1.mm.bing.net/th/id/OIG.KrUfYLcUu0ihSU7Ucdgd?w=270&...pid=ImgGn"
             alt="a beautiful purple ... depth of field. Afbeelding 1 van 4" />
     """
     img_tags = soup.find_all("img", class_=class_name)
@@ -165,7 +167,7 @@ def download_images(title: str, image_urls: list[str]) -> None:
     for i, image_url in enumerate(image_urls):
         # TBD format, maybe full name is useful when moving out of folder
         file_path = folder_path / f"{i + 1}.png"
-        response = requests.get(image_url)
+        response = requests.get(image_url, timeout=TIMEOUT)
         file_path.write_bytes(response.content)
 
 
