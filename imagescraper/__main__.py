@@ -6,32 +6,13 @@ Extract prompts and images from text file of URLs.
 Read URLs for a text file, get the prompt and image URLs for that page
 and save them.
 """
-import hashlib
-import re
 import sys
 from pathlib import Path
 
 import bs4
-import requests
 
-APP_DIR = Path(__file__)
-VAR_DIR = APP_DIR / Path("var")
-FIREFOX_URLS_PATH = VAR_DIR / "history_processed" / "firefox_urls.txt"
-IMG_OUTPUT_PATH = VAR_DIR / "creations"
-
-CREATION_DIR_NAME_MAX_LENGTH = 40
-TIMEOUT = 5
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101"
-    " Firefox/117.0",
-}
-# We need to add this explicitly like in the case of only a single creation on a page.
-BING_IMAGE_DOMAIN = "https://tse1.mm.bing.net/"
-
-# NB. Some classes and id values are randomized, but this seems constant.
-CSS_IMG_CLASS = "mimg"
-CSS_IMG_CLASS_SINGLE = "gir_mmimg"
+from . import download, process
+from .config import FIREFOX_URLS_PATH, HEADERS
 
 
 def read_file(path: Path) -> list[str]:
@@ -50,144 +31,14 @@ def read_file(path: Path) -> list[str]:
     return results
 
 
-def get_html(url: str, headers: dict[str, str]) -> str:
+def download_for_creation_page(url: str, html: str):
     """
-    Request HTML for a URL and return as text.
+    Request images for creation page HTML and store them.
     """
-    response = requests.get(url, headers=headers, timeout=TIMEOUT)
-    assert response.ok, f"{response.status_code} - {response.reason} - {url}"
+    soup = bs4.BeautifulSoup(html, "html.parser")
+    title, image_urls = process.process_creation_page(url, soup)
 
-    html = response.text
-
-    return html
-
-
-def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str]:
-    """
-    Request URls return the HTML content for each URL.
-    """
-    html_content = {}
-
-    for url in urls:
-        print("URL", url)
-        html = get_html(url, headers)
-        html_content[url] = html
-
-    return html_content
-
-
-def get_prompt(soup: bs4.BeautifulSoup) -> str:
-    """
-    Extract the prompt of a page and return it.
-    """
-    textarea_element = soup.select_one("form > textarea")
-
-    assert textarea_element is not None, "Could not find textarea element"
-
-    return textarea_element.text
-
-
-def get_image_urls(soup: bs4.BeautifulSoup, class_name: str) -> list[str]:
-    """
-    Gets all of the image URLs on an HTML page, using the given class name
-    to select the img tags.
-
-    Ignore query parameters in the URL.
-
-    Expect images like this:
-        <img class="mimg"
-            style=""
-            height="270"
-            width="270"
-            src="https://tse1.mm.bing.net/th/id/OIG.KrUfYLcUu0ihSU7Ucdgd?w=270&...pid=ImgGn"
-            alt="a beautiful purple ... depth of field. Afbeelding 1 van 4" />
-    """
-    img_tags = soup.find_all("img", class_=class_name)
-
-    image_urls = []
-    for img_tag in img_tags:
-        image_url = img_tag["src"].split("?")[0]
-
-        if image_url.startswith("/"):
-            image_url = f"{BING_IMAGE_DOMAIN}{image_url}"
-        image_urls.append(image_url)
-
-    return image_urls
-
-
-def slugify(value: str) -> str:
-    """
-    Convert a value to lowercase alphanumeric and hyphens in place of spaces.
-    """
-    value = value.replace(" ", "-")
-    value = re.sub(r"[^\w\s-]", "", value)
-    value = value.lower()
-
-    return value
-
-
-def as_folder_name(title: str) -> str:
-    """
-    Make a folder name as a short title and hash.
-
-    The first part is a short slug form of the title to keep it readable.
-
-    The end is a hash based on the entire title so that it is unique but
-    every time you run the app for the same URL it will be the same. So we
-    can re-download with new app logic. Or choose to skip URLs we already
-    downloaded, so we can focus on new URLs or failed URLs.
-    """
-    title_slug = slugify(title)
-    title_slug = title_slug[:CREATION_DIR_NAME_MAX_LENGTH]
-
-    hash_value = hashlib.sha1(title.encode("utf-8"))
-    hash_str = hash_value.hexdigest()[:8]
-
-    return f"{title_slug}-{hash_str}"
-
-
-def download_images(title: str, image_urls: list[str]) -> None:
-    """
-    Download image URLs for a creation page to a folder and make a text file
-    containing the prompt.
-    """
-    folder_name = as_folder_name(title)
-    print("Folder name", folder_name)
-
-    folder_path = IMG_OUTPUT_PATH / folder_name
-
-    if not folder_path.exists():
-        folder_path.mkdir(parents=True)
-    else:
-        print("Skipping", folder_path)
-        return
-
-    (folder_path / "prompt.txt").write_text(title)
-
-    for i, image_url in enumerate(image_urls):
-        # TBD format, maybe full name is useful when moving out of folder
-        file_path = folder_path / f"{i + 1}.png"
-        response = requests.get(image_url, timeout=TIMEOUT)
-        file_path.write_bytes(response.content)
-
-
-def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[str]]:
-    """
-    Expect HTML for a page of 1-4 creations and return the prompt/title and image URLs.
-    """
-    title = get_prompt(soup)
-    print("Title", title, "URL", url)
-
-    image_urls = get_image_urls(soup, CSS_IMG_CLASS)
-    if not image_urls:
-        print("Trying another CSS selector")
-        image_urls = get_image_urls(soup, CSS_IMG_CLASS_SINGLE)
-
-    assert image_urls, f"Expected at least one image URL for CSS selectos at {url}"
-
-    print("Image URLs", image_urls)
-
-    return title, image_urls
+    download.download_images(title, image_urls)
 
 
 def main(args: list[str]) -> None:
@@ -204,14 +55,11 @@ def main(args: list[str]) -> None:
         urls = read_file(FIREFOX_URLS_PATH)
 
     print("GET HTML FOR CREATION PAGE URLS")
-    html_content = get_html_for_urls(urls, HEADERS)
+    html_content = download.get_html_for_urls(urls, HEADERS)
 
     print("GET PROMPT AND IMAGE URLS AND DOWNLOAD")
     for url, html in html_content.items():
-        soup = bs4.BeautifulSoup(html, "html.parser")
-        title, image_urls = process_creation_page(url, soup)
-
-        download_images(title, image_urls)
+        download_for_creation_page(url, html)
 
 
 if __name__ == "__main__":
