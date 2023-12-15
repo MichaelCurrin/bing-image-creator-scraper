@@ -101,7 +101,7 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
         print("Skipping", folder_path)
         return
 
-    metadata_txt = f"{prompt.strip()}\n{url}"
+    metadata_txt = f"{url}\n{prompt.strip()}"
     metadata_path = folder_path / METADATA_NAME
     metadata_path.write_text(metadata_txt)
 
