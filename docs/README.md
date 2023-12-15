@@ -9,5 +9,5 @@
 - [Usage](usage.md)
     ```sh
     $ make firefox
-    $ make app
+    $ make run
     ```

@@ -20,7 +20,7 @@ Follow the steps in [Browser history](browser-history.md) to prepare your data.
 Run application to scrape all data for text file of URLs. If you have Firefox and Edge URLs, all will be used.
 
 ```sh
-$ make app
+$ make run
 ```
 
 Count your creations:

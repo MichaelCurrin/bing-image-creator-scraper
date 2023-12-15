@@ -92,7 +92,7 @@ edge:
 
 
 # Extract prompts and images from text file of URLs.
-app:
+run:
 	python -m imagescraper
 
 debug:
