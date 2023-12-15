@@ -10,6 +10,25 @@ from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_PATH, TIMEOUT
 METADATA_NAME = "metadata.txt"
 
 
+def _uuid_from_url(url: str):
+    """
+    Get UUID from Bing Image Creation URL.
+
+    https://www.bing.com/images/create/a-beautiful-...-dr/651328ae9a6646c9b1b66c9a26c1bf2f
+    => 651328ae9a6646c9b1b66c9a26c1bf2f
+    """
+    assert "?" not in url, (
+        "Query parameters are not allowed in the URL."
+        " Fix the URL. Or new logic has to be added for this."
+    )
+
+    parts = url.rsplit("/", maxsplit=1)
+
+    assert parts, f"Could not split URL to find UUID. url: {url}"
+
+    return parts[-1]
+
+
 def _slugify(value: str) -> str:
     """
     Convert a value to lowercase alphanumeric and hyphens in place of spaces.
@@ -64,25 +83,6 @@ def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str
     return html_content
 
 
-def _uuid_from_url(url: str):
-    """
-    Get UUID from Bing Image Creation URL.
-
-    https://www.bing.com/images/create/a-beautiful-...-dr/651328ae9a6646c9b1b66c9a26c1bf2f
-    => 651328ae9a6646c9b1b66c9a26c1bf2f
-    """
-    assert "?" not in url, (
-        "Query parameters are not allowed in the URL."
-        " Fix the URL. Or new logic has to be added for this."
-    )
-
-    parts = url.rsplit("/", maxsplit=1)
-
-    assert parts, f"Could not split URL to find UUID. url: {url}"
-
-    return parts[-1]
-
-
 def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
     """
     Download image URLs for a creation page to a folder and make a text file
@@ -101,7 +101,7 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
         print("Skipping", folder_path)
         return
 
-    metadata_txt = f"{prompt}\n{url}"
+    metadata_txt = f"{prompt.strip()}\n{url}"
     metadata_path = folder_path / METADATA_NAME
     metadata_path.write_text(metadata_txt)
 
