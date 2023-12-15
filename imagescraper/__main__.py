@@ -6,8 +6,9 @@ Extract prompts and images from text file of URLs.
 Read URLs for a text file, get the prompt and image URLs for that page
 and save them.
 """
-import random
+import hashlib
 import re
+import sys
 from pathlib import Path
 
 import bs4
@@ -17,6 +18,7 @@ import requests
 VAR_DIR = Path("var")
 FIREFOX_URLS_PATH = VAR_DIR / "outputs" / "firefox_urls.txt"
 IMG_OUTPUT_PATH = VAR_DIR / "outputs" / "creations"
+CREATION_DIR_NAME_MAX_LENGTH = 20
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101"
@@ -25,6 +27,22 @@ HEADERS = {
 
 # NB. Some classes and id values are randomized, but this seems constant.
 CSS_IMG_CLASS = "mimg"
+
+
+def read_file(path: Path) -> list[str]:
+    """
+    Return all non-empty lines in a text file.
+    """
+    results = []
+
+    with open(path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            results.append(line)
+
+    return results
 
 
 def get_html(url: str, headers: dict[str, str]) -> str:
@@ -39,22 +57,17 @@ def get_html(url: str, headers: dict[str, str]) -> str:
     return html
 
 
-def get_html_for_urls(url_file: Path, headers: dict[str, str]) -> dict[str, str]:
+def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str]:
     """
-    Open a text file and return the HTML content for each URL.
+    Request URls return the HTML content for each URL.
     """
     html_content = {}
 
-    with open(url_file, "r") as f:
-        for line in f:
-            url = line.strip()
-            if not url:
-                continue
+    for url in urls:
+        print("URL", url)
+        html = get_html(url, headers)
+        html_content[url] = html
 
-            print("URL", url)
-            html = get_html(url, headers)
-            html_content[url] = html
-            break
     return html_content
 
 
@@ -99,23 +112,31 @@ def slugify(value: str) -> str:
     return value
 
 
-def make_folder_name(title: str) -> str:
+def as_directory_name(title: str) -> str:
     """
-    Makes a folder name given a title.
+    Make a directory name as a short title and hash.
+
+    The first part is a short slug form of the title to keep it readable.
+
+    The end is a hash based on the entire title so that it is unique but
+    every time you run the app for the same URL it will be the same. So we
+    can re-download with new app logic. Or choose to skip URLs we already
+    downloaded, so we can focus on new URLs or failed URLs.
     """
-    title = slugify(title)
-    title = title[:20]
+    title_slug = slugify(title)
+    title_slug = title_slug[:CREATION_DIR_NAME_MAX_LENGTH]
 
-    random_number = random.randint(100000, 999999)
+    hash_value = hashlib.sha1(title.encode("utf-8"))
+    hash_str = hash_value.hexdigest()[:8]
 
-    return f"{title}-{random_number}"
+    return f"{title_slug}-{hash_str}"
 
 
 def download_images(title: str, image_urls: list[str]) -> None:
     """
     Download image URLs for a creation page to a folder, with a text file containing the prompt.
     """
-    folder_name = make_folder_name(title)
+    folder_name = as_directory_name(title)
     print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_PATH / folder_name
@@ -143,9 +164,21 @@ def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[
     return title, image_urls
 
 
-def main() -> None:
+def main(args: list[str]) -> None:
+    """
+    Main command-line entry-point.
+
+    TODO: Add flag so existing folders can be skipped if they are not empty.
+    TODO: Add a flag to fetch exactly one item always and write it.
+    """
+    if args:
+        url = args.pop(0)
+        urls = [url]
+    else:
+        urls = read_file(FIREFOX_URLS_PATH)
+
     print("GET HTML FOR CREATION PAGE URLS")
-    html_content = get_html_for_urls(FIREFOX_URLS_PATH, HEADERS)
+    html_content = get_html_for_urls(urls, HEADERS)
 
     print("GET PROMPT AND IMAGE URLS AND DOWNLOAD")
     for url, html in html_content.items():
@@ -156,4 +189,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
