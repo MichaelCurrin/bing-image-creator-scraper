@@ -13,6 +13,7 @@ from pathlib import Path
 import bs4
 import requests
 
+
 VAR_DIR = Path("var")
 FIREFOX_URLS_PATH = VAR_DIR / "outputs" / "firefox_urls.txt"
 IMG_OUTPUT_PATH = VAR_DIR / "outputs" / "creations"
