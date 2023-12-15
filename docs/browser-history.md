@@ -8,14 +8,14 @@
     ```
 1. Find the relevant directory for your profile and go into it.
 1. Find the `places.sqlite` file.
-1. Copy that file into this repo to the `var/inputs` directory.
+1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory.
 1. Get relevant URLs out and write to a text file using this command:
     ```sh
     make firefox
     ```
 1. View the output file here:
     ```
-    var/outputs/firefox_urls.txt
+    imagescraper/var/browser_processed/firefox_urls.txt
     ```
 
 ## Edge
