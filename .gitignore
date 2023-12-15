@@ -1,4 +1,3 @@
-var/inputs/*
-var/outputs/*
+imagescraper/var/
 
 __pycache__/
