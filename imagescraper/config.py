@@ -4,8 +4,9 @@ Config module.
 from pathlib import Path
 
 
-APP_DIR = Path(__file__)
+APP_DIR = Path(__file__).parent
 VAR_DIR = APP_DIR / Path("var")
+
 FIREFOX_URLS_PATH = VAR_DIR / "history_processed" / "firefox_urls.txt"
 IMG_OUTPUT_PATH = VAR_DIR / "creations"
 
