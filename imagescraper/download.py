@@ -9,6 +9,7 @@ import requests
 
 from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_PATH, TIMEOUT
 
+
 METADATA_NAME = "metadata.txt"
 
 

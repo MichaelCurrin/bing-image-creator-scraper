@@ -10,10 +10,8 @@ import sys
 
 import bs4
 
-from . import files, process_html
-
-from . import download
-from .config import FIREFOX_URLS_PATH, EDGE_URLS_PATH, HEADERS
+from . import download, files, process_html
+from .config import EDGE_URLS_PATH, FIREFOX_URLS_PATH, HEADERS
 
 
 def download_for_creation_page(url: str, html: str):
