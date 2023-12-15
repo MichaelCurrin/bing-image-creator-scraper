@@ -38,7 +38,7 @@ def download_for_creation_page(url: str, html: str):
     soup = bs4.BeautifulSoup(html, "html.parser")
     prompt, image_urls = process.process_creation_page(url, soup)
 
-    download.download_images(prompt, image_urls)
+    download.download_images(prompt, url, image_urls)
 
 
 def main(args: list[str]) -> None:

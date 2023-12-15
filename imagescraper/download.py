@@ -2,11 +2,12 @@
 Download module.
 """
 import re
-import hashlib
 
 import requests
 
 from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_PATH, TIMEOUT
+
+METADATA_NAME = "metadata.txt"
 
 
 def _slugify(value: str) -> str:
@@ -20,24 +21,21 @@ def _slugify(value: str) -> str:
     return value
 
 
-def _as_folder_name(prompt: str) -> str:
+def _as_folder_name(prompt: str, uuid: str) -> str:
     """
     Make a folder name as a short prompt and hash.
 
     The first part is a short slug form of the prompt to keep it readable.
-
-    The end is a hash based on the entire prompt so that it is unique but
-    every time you run the app for the same URL it will be the same. So we
-    can re-download with new app logic. Or choose to skip URLs we already
-    downloaded, so we can focus on new URLs or failed URLs.
+    There may be some duplication across creations where the front part is the
+    same, so to ensure they are kept unique where separate based on the
+    Bing creation UUID.
     """
     prompt_slug = _slugify(prompt)
     prompt_slug = prompt_slug[:CREATION_DIR_NAME_MAX_LENGTH]
 
-    hash_value = hashlib.sha1(prompt.encode("utf-8"))
-    hash_str = hash_value.hexdigest()[:8]
+    short_uuid = uuid[:8]
 
-    return f"{prompt_slug}-{hash_str}"
+    return f"{prompt_slug}-{short_uuid}"
 
 
 def _get_html(url: str, headers: dict[str, str]) -> str:
@@ -66,12 +64,33 @@ def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str
     return html_content
 
 
-def download_images(prompt: str, image_urls: list[str]) -> None:
+def _uuid_from_url(url: str):
+    """
+    Get UUID from Bing Image Creation URL.
+
+    https://www.bing.com/images/create/a-beautiful-...-dr/651328ae9a6646c9b1b66c9a26c1bf2f
+    => 651328ae9a6646c9b1b66c9a26c1bf2f
+    """
+    assert "?" not in url, (
+        "Query parameters are not allowed in the URL."
+        " Fix the URL. Or new logic has to be added for this."
+    )
+
+    parts = url.rsplit("/", maxsplit=1)
+
+    assert parts, f"Could not split URL to find UUID. url: {url}"
+
+    return parts[-1]
+
+
+def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
     """
     Download image URLs for a creation page to a folder and make a text file
-    containing the prompt.
+    containing the metadata.
     """
-    folder_name = _as_folder_name(prompt)
+    uuid = _uuid_from_url(url)
+
+    folder_name = _as_folder_name(prompt, uuid)
     print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_PATH / folder_name
@@ -82,10 +101,11 @@ def download_images(prompt: str, image_urls: list[str]) -> None:
         print("Skipping", folder_path)
         return
 
-    (folder_path / "prompt.txt").write_text(prompt)
+    metadata_txt = f"{prompt}\n{url}"
+    metadata_path = folder_path / METADATA_NAME
+    metadata_path.write_text(metadata_txt)
 
     for i, image_url in enumerate(image_urls):
-        # TBD format, maybe full name is useful when moving out of folder
-        file_path = folder_path / f"{i + 1}.png"
+        file_path = folder_path / f"{uuid}_{i + 1}.png"
         response = requests.get(image_url, timeout=TIMEOUT)
         file_path.write_bytes(response.content)
