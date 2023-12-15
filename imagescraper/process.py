@@ -12,7 +12,7 @@ CSS_IMG_CLASS = "mimg"
 CSS_IMG_CLASS_SINGLE = "gir_mmimg"
 
 
-def get_prompt(soup: bs4.BeautifulSoup) -> str:
+def _get_prompt(soup: bs4.BeautifulSoup) -> str:
     """
     Extract the prompt of a page and return it.
     """
@@ -55,7 +55,7 @@ def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[
     """
     Expect HTML for a page of 1-4 creations and return the prompt/title and image URLs.
     """
-    title = get_prompt(soup)
+    title = _get_prompt(soup)
     print("Title", title, "URL", url)
 
     image_urls = get_image_urls(soup, CSS_IMG_CLASS)

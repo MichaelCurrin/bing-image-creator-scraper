@@ -7,7 +7,7 @@ import re
 from .config import CREATION_DIR_NAME_MAX_LENGTH
 
 
-def slugify(value: str) -> str:
+def _slugify(value: str) -> str:
     """
     Convert a value to lowercase alphanumeric and hyphens in place of spaces.
     """
@@ -29,7 +29,7 @@ def as_folder_name(title: str) -> str:
     can re-download with new app logic. Or choose to skip URLs we already
     downloaded, so we can focus on new URLs or failed URLs.
     """
-    title_slug = slugify(title)
+    title_slug = _slugify(title)
     title_slug = title_slug[:CREATION_DIR_NAME_MAX_LENGTH]
 
     hash_value = hashlib.sha1(title.encode("utf-8"))

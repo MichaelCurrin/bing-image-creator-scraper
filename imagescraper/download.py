@@ -7,7 +7,7 @@ from . import lib
 from .config import IMG_OUTPUT_PATH, TIMEOUT
 
 
-def get_html(url: str, headers: dict[str, str]) -> str:
+def _get_html(url: str, headers: dict[str, str]) -> str:
     """
     Request HTML for a URL and return as text.
     """
@@ -27,7 +27,7 @@ def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str
 
     for url in urls:
         print("URL", url)
-        html = get_html(url, headers)
+        html = _get_html(url, headers)
         html_content[url] = html
 
     return html_content
