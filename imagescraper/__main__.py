@@ -18,15 +18,18 @@ import requests
 VAR_DIR = Path("var")
 FIREFOX_URLS_PATH = VAR_DIR / "outputs" / "firefox_urls.txt"
 IMG_OUTPUT_PATH = VAR_DIR / "outputs" / "creations"
-CREATION_DIR_NAME_MAX_LENGTH = 20
+CREATION_DIR_NAME_MAX_LENGTH = 40
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101"
     " Firefox/117.0",
 }
+# We need to add this explicitly like in the case of only a single creation on a page.
+BING_IMAGE_DOMAIN = "https://tse1.mm.bing.net/"
 
 # NB. Some classes and id values are randomized, but this seems constant.
 CSS_IMG_CLASS = "mimg"
+CSS_IMG_CLASS_SINGLE = "gir_mmimg"
 
 
 def read_file(path: Path) -> list[str]:
@@ -87,16 +90,25 @@ def get_image_urls(soup: bs4.BeautifulSoup, class_name: str) -> list[str]:
     Gets all of the image URLs on an HTML page, using the given class name
     to select the img tags.
 
-    Ignore query parameters.
+    Ignore query parameters in the URL.
+
+    Expect images like this:
+        <img class="mimg"
+            style=""
+            height="270"
+            width="270"
+            src="https://tse1.mm.bing.net/th/id/OIG.KrUfYLcUu0ihSU7Ucdgd?w=270&amp;h=270&amp;c=6&amp;r=0&amp;o=5&amp;pid=ImgGn"
+            alt="a beautiful purple ... depth of field. Afbeelding 1 van 4" />
     """
     img_tags = soup.find_all("img", class_=class_name)
 
     image_urls = []
     for img_tag in img_tags:
         image_url = img_tag["src"].split("?")[0]
-        image_urls.append(image_url)
 
-    assert image_urls, "Expected at leat one image URL"
+        if image_url.startswith("/"):
+            image_url = f"{BING_IMAGE_DOMAIN}{image_url}"
+        image_urls.append(image_url)
 
     return image_urls
 
@@ -134,19 +146,25 @@ def as_directory_name(title: str) -> str:
 
 def download_images(title: str, image_urls: list[str]) -> None:
     """
-    Download image URLs for a creation page to a folder, with a text file containing the prompt.
+    Download image URLs for a creation page to a directory and make a text file
+    containing the prompt.
     """
     folder_name = as_directory_name(title)
     print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_PATH / folder_name
+
     if not folder_path.exists():
         folder_path.mkdir(parents=True)
+    else:
+        print("Skipping", folder_path)
+        return
 
     (folder_path / "prompt.txt").write_text(title)
 
     for i, image_url in enumerate(image_urls):
-        file_path = folder_path / f"{i + 1}.png"  # TBD format
+        # TBD format, maybe full name is useful when moving out of folder
+        file_path = folder_path / f"{i + 1}.png"
         response = requests.get(image_url)
         file_path.write_bytes(response.content)
 
@@ -159,6 +177,12 @@ def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[
     print("Title", title, "URL", url)
 
     image_urls = get_image_urls(soup, CSS_IMG_CLASS)
+    if not image_urls:
+        print("Trying another CSS selector")
+        image_urls = get_image_urls(soup, CSS_IMG_CLASS_SINGLE)
+
+    assert image_urls, f"Expected at least one image URL for CSS selectos at {url}"
+
     print("Image URLs", image_urls)
 
     return title, image_urls
