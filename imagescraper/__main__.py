@@ -1,24 +1,47 @@
 """
 Bing AI scraper app.
+
+Extract prompts and images from text file of URLs.
+
+Read URLs for a text file, get the prompt and image URLs for that page
+and save them.
 """
+import random
 import re
 from pathlib import Path
 
 import bs4
 import requests
 
-URLS = Path("var") / "outputs" / "firefox_urls.txt"
-IMG_OUTPUT_PATH = Path("var") / "outputs" / "creations"
+VAR_DIR = Path("var")
+FIREFOX_URLS_PATH = VAR_DIR / "outputs" / "firefox_urls.txt"
+IMG_OUTPUT_PATH = VAR_DIR / "outputs" / "creations"
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101"
+    " Firefox/117.0",
 }
 
 # NB. Some classes and id values are randomized, but this seems constant.
-IMG_CLASS = "mimg"
+CSS_IMG_CLASS = "mimg"
 
 
-def get_html(url_file, headers):
+def get_html(url: str, headers: dict[str, str]) -> str:
+    """
+    Request HTML for a URL and return as text.
+    """
+    response = requests.get(url, headers=headers)
+    assert response.ok, f"{response.status_code} - {response.reason} - {url}"
+
+    html = response.text
+
+    return html
+
+
+def get_html_for_urls(url_file: Path, headers: dict[str, str]) -> dict[str, str]:
+    """
+    Open a text file and return the HTML content for each URL.
+    """
     html_content = {}
 
     with open(url_file, "r") as f:
@@ -27,49 +50,47 @@ def get_html(url_file, headers):
             if not url:
                 continue
 
-            print(url)
-            response = requests.get(url, headers=headers)
-            assert response.ok, f"{response.status_code} - {response.reason} - {url}"
-
-            html = response.text
+            print("URL", url)
+            html = get_html(url, headers)
             html_content[url] = html
-
+            break
     return html_content
 
 
-def get_prompt(soup):
+def get_prompt(soup: bs4.BeautifulSoup) -> str:
     """
-    Extracts the prompt of a page.
+    Extract the prompt of a page and return it.
     """
     textarea_element = soup.select_one("form > textarea")
 
-    assert textarea_element is not None, "Could not find textarea"
+    assert textarea_element is not None, "Could not find textarea element"
 
     return textarea_element.text
 
 
-def get_image_urls(soup, class_name):
+def get_image_urls(soup: bs4.BeautifulSoup, class_name: str) -> list[str]:
     """
-    Gets all of the image URLs on an HTML page, using the given class name to select the img tags.
+    Gets all of the image URLs on an HTML page, using the given class name
+    to select the img tags.
+
     Ignore query parameters.
     """
     img_tags = soup.find_all("img", class_=class_name)
 
     image_urls = []
     for img_tag in img_tags:
-        image_url = img_tag["src"]
-        image_url = image_url.split("?")[0]
+        image_url = img_tag["src"].split("?")[0]
         image_urls.append(image_url)
 
-    assert image_urls
+    assert image_urls, "Expected at leat one image URL"
 
     return image_urls
 
 
-import random
-
-
-def slugify(value):
+def slugify(value: str) -> str:
+    """
+    Convert a value to lowercase alphanumeric and hyphens in place of spaces.
+    """
     value = value.replace(" ", "-")
     value = re.sub(r"[^\w\s-]", "", value)
     value = value.lower()
@@ -77,7 +98,7 @@ def slugify(value):
     return value
 
 
-def make_folder_name(title):
+def make_folder_name(title: str) -> str:
     """
     Makes a folder name given a title.
     """
@@ -89,12 +110,12 @@ def make_folder_name(title):
     return f"{title}-{random_number}"
 
 
-def download_images(title, image_urls):
+def download_images(title: str, image_urls: list[str]) -> None:
     """
     Download image URLs for a creation page to a folder, with a text file containing the prompt.
     """
     folder_name = make_folder_name(title)
-    print(folder_name)
+    print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_PATH / folder_name
     if not folder_path.exists():
@@ -108,24 +129,28 @@ def download_images(title, image_urls):
         file_path.write_bytes(response.content)
 
 
-def process_creation_page(url, soup):
+def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[str]]:
+    """
+    Expect HTML for a page of 1-4 creations and return the prompt/title and image URLs.
+    """
     title = get_prompt(soup)
-    print(title)
+    print("Title", title, "URL", url)
 
-    image_urls = get_image_urls(soup, IMG_CLASS)
-    print(image_urls)
+    image_urls = get_image_urls(soup, CSS_IMG_CLASS)
+    print("Image URLs", image_urls)
 
     return title, image_urls
 
 
-def main():
-    print("GET HTML")
-    html_content = get_html(URLS, HEADERS)
+def main() -> None:
+    print("GET HTML FOR CREATION PAGE URLS")
+    html_content = get_html_for_urls(FIREFOX_URLS_PATH, HEADERS)
 
-    print("GET TITLE AND IMG URLS")
+    print("GET PROMPT AND IMAGE URLS AND DOWNLOAD")
     for url, html in html_content.items():
         soup = bs4.BeautifulSoup(html, "html.parser")
         title, image_urls = process_creation_page(url, soup)
+
         download_images(title, image_urls)
 
 
