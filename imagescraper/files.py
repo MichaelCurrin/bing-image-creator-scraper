@@ -26,10 +26,10 @@ def _read_file(path: Path) -> list[str]:
 def all_urls(firefox_path: Path, edge_path: Path) -> list[str]:
     """
     Read URLs from Firefox and Edge text files if they exist and return combined
-    URLs list.
+    URLs list (excluding duplicates.)
     """
     assert (
-        firefox_path.exists() or not edge_path.exists()
+        firefox_path.exists() or edge_path.exists()
     ), "Unable to find either the Firefox or Edge files of URLs"
 
     urls = []
@@ -42,5 +42,9 @@ def all_urls(firefox_path: Path, edge_path: Path) -> list[str]:
         edge_urls = _read_file(edge_path)
         assert edge_urls, "Edge URLs text file cannot be empty"
         urls.extend(edge_urls)
+
+    if firefox_path.exists() and edge_path.exists():
+        unique_urls = set(urls)
+        urls = sorted(unique_urls)
 
     return urls

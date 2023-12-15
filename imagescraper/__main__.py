@@ -29,7 +29,6 @@ def main(args: list[str]) -> None:
     Main command-line entry-point.
 
     TODO: Add flag so existing folders can be skipped if they are not empty.
-    TODO: Add a flag to fetch exactly one item always and write it.
     """
     if args:
         url = args.pop(0)
