@@ -1,6 +1,7 @@
 SHELL = /bin/bash
 APP_DIR = imagescraper
 
+IMG_OUTPUT_PATH = $(APP_DIR)/var/creations
 FIREFOX_INPUT = $(APP_DIR)/var/history_raw/places.sqlite
 FIREFOX_OUTPUT = $(APP_DIR)/var/history_processed/firefox_urls.txt
 FIREFOX_SQL_QUERY = "SELECT url FROM moz_places WHERE url LIKE 'https://www.bing.com/images/create/%'"
@@ -78,3 +79,11 @@ app:
 
 debug:
 	python -m imagescraper $(DEBUG_TEST_URL)
+
+# How many creation folders exist.
+count:
+	find $(IMG_OUTPUT_PATH)/* -maxdepth 1 -type d | wc -l
+
+# Reset - delete all creations.
+delete:
+	rm -rf $(IMG_OUTPUT_PATH)/*
