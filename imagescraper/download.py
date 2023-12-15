@@ -20,24 +20,24 @@ def _slugify(value: str) -> str:
     return value
 
 
-def _as_folder_name(title: str) -> str:
+def _as_folder_name(prompt: str) -> str:
     """
-    Make a folder name as a short title and hash.
+    Make a folder name as a short prompt and hash.
 
-    The first part is a short slug form of the title to keep it readable.
+    The first part is a short slug form of the prompt to keep it readable.
 
-    The end is a hash based on the entire title so that it is unique but
+    The end is a hash based on the entire prompt so that it is unique but
     every time you run the app for the same URL it will be the same. So we
     can re-download with new app logic. Or choose to skip URLs we already
     downloaded, so we can focus on new URLs or failed URLs.
     """
-    title_slug = _slugify(title)
-    title_slug = title_slug[:CREATION_DIR_NAME_MAX_LENGTH]
+    prompt_slug = _slugify(prompt)
+    prompt_slug = prompt_slug[:CREATION_DIR_NAME_MAX_LENGTH]
 
-    hash_value = hashlib.sha1(title.encode("utf-8"))
+    hash_value = hashlib.sha1(prompt.encode("utf-8"))
     hash_str = hash_value.hexdigest()[:8]
 
-    return f"{title_slug}-{hash_str}"
+    return f"{prompt_slug}-{hash_str}"
 
 
 def _get_html(url: str, headers: dict[str, str]) -> str:
@@ -66,12 +66,12 @@ def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str
     return html_content
 
 
-def download_images(title: str, image_urls: list[str]) -> None:
+def download_images(prompt: str, image_urls: list[str]) -> None:
     """
     Download image URLs for a creation page to a folder and make a text file
     containing the prompt.
     """
-    folder_name = _as_folder_name(title)
+    folder_name = _as_folder_name(prompt)
     print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_PATH / folder_name
@@ -82,7 +82,7 @@ def download_images(title: str, image_urls: list[str]) -> None:
         print("Skipping", folder_path)
         return
 
-    (folder_path / "prompt.txt").write_text(title)
+    (folder_path / "prompt.txt").write_text(prompt)
 
     for i, image_url in enumerate(image_urls):
         # TBD format, maybe full name is useful when moving out of folder

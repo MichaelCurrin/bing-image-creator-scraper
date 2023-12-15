@@ -33,12 +33,12 @@ def read_file(path: Path) -> list[str]:
 
 def download_for_creation_page(url: str, html: str):
     """
-    Request images for creation page HTML and store them.
+    Request images for creation page HTML and store them with creation metadata.
     """
     soup = bs4.BeautifulSoup(html, "html.parser")
-    title, image_urls = process.process_creation_page(url, soup)
+    prompt, image_urls = process.process_creation_page(url, soup)
 
-    download.download_images(title, image_urls)
+    download.download_images(prompt, image_urls)
 
 
 def main(args: list[str]) -> None:

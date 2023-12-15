@@ -53,10 +53,10 @@ def get_image_urls(soup: bs4.BeautifulSoup, class_name: str) -> list[str]:
 
 def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[str]]:
     """
-    Expect HTML for a page of 1-4 creations and return the prompt/title and image URLs.
+    Expect HTML for a page of 1-4 creations and return the prompt and image URLs.
     """
-    title = _get_prompt(soup)
-    print("Title", title, "URL", url)
+    prompt = _get_prompt(soup)
+    print("Prompt", prompt, "URL", url)
 
     image_urls = get_image_urls(soup, CSS_IMG_CLASS)
     if not image_urls:
@@ -67,4 +67,4 @@ def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[
 
     print("Image URLs", image_urls)
 
-    return title, image_urls
+    return prompt, image_urls
