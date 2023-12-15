@@ -1,5 +1,7 @@
 """
-File processing module.
+Files module.
+
+Read files of URLs.
 """
 
 from pathlib import Path
