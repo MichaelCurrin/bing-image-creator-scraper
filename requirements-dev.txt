@@ -1,2 +1,13 @@
 black~=23.9
 isort~=5.12
+
+flake8~=4.0
+pylint~=2.12
+pylint-exit~=1.2
+
+mypy~=0.940
+
+pytest~=7.0
+
+types-beautifulsoup4~=4.12
+types-requests~=2.31
