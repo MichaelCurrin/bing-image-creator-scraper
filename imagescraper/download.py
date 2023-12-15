@@ -1,5 +1,7 @@
 """
 Download module.
+
+Request HTML and download images and metadata.
 """
 import re
 
