@@ -14,9 +14,10 @@ $ make help
 
 Follow the steps in [Browser history](browser-history.md) to prepare your data.
 
+
 ## Run
 
-Run application to scrape all data for text file of URLs.
+Run application to scrape all data for text file of URLs. If you have Firefox and Edge URLs, all will be used.
 
 ```sh
 $ make app

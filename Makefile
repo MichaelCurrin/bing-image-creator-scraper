@@ -1,10 +1,16 @@
 SHELL = /bin/bash
 APP_DIR = imagescraper
+VAR_DIR = $(APP_DIR)/var
 
-IMG_OUTPUT_PATH = $(APP_DIR)/var/creations
-FIREFOX_INPUT = $(APP_DIR)/var/history_raw/places.sqlite
-FIREFOX_OUTPUT = $(APP_DIR)/var/history_processed/firefox_urls.txt
-FIREFOX_SQL_QUERY = "SELECT url FROM moz_places WHERE url LIKE 'https://www.bing.com/images/create/%'"
+FIREFOX_INPUT_PATH = $(VAR_DIR)/history_raw/places.sqlite
+EDGE_INPUT_PATH = $(VAR_DIR)/history_raw/EdgeHistory.csv
+
+FIREFOX_OUTPUT_PATH = $(VAR_DIR)/history_processed/firefox_urls.txt
+EDGE_OUTPUT_PATH = $(VAR_DIR)/history_processed/edge_urls.txt
+IMG_OUTPUT_PATH = $(VAR_DIR)/creations
+
+BING_CREATE_URL = https://www.bing.com/images/create/
+
 DEBUG_TEST_URL = https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
 
 export PYTHONPATH
@@ -67,11 +73,23 @@ t typecheck:
 
 # Convert Firefox DB file into URLs text file.
 firefox:
-	[[ -f $(FIREFOX_INPUT) ]] || { echo 'Cannot find $(FIREFOX_INPUT)'; exit 1 ;}
+	[[ -f $(FIREFOX_INPUT_PATH) ]] || { echo 'Cannot find $(FIREFOX_INPUT_PATH)'; exit 1 ;}
 
-	sqlite3 $(FIREFOX_INPUT) $(FIREFOX_SQL_QUERY) \
-		| cut -f1 -d? | sort | uniq > $(FIREFOX_OUTPUT)
-	echo "File created at: $(FIREFOX_OUTPUT)"
+	sqlite3 $(FIREFOX_INPUT_PATH) \
+		"SELECT url FROM moz_places WHERE url LIKE '$(BING_CREATE_URL)%'" \
+			| cut -f1 -d? | sort | uniq > $(FIREFOX_OUTPUT_PATH)
+	@echo "File created at: $(FIREFOX_OUTPUT_PATH)
+	@echo "With line count:"
+	@wc -l < $(FIREFOX_OUTPUT_PATH)
+
+edge:
+	[[ -f $(EDGE_INPUT_PATH) ]] || { echo 'Cannot find $(EDGE_INPUT_PATH)'; exit 1 ;}
+
+	grep '$(BING_CREATE_URL)' $(EDGE_INPUT_PATH) | cut -d ',' -f 2 > $(EDGE_OUTPUT_PATH)
+	@echo "File created at: $(EDGE_OUTPUT_PATH)"
+	@echo "With line count:"
+	@wc -l < $(EDGE_OUTPUT_PATH)
+
 
 # Extract prompts and images from text file of URLs.
 app:
