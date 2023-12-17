@@ -73,7 +73,18 @@ t typecheck:
 	mypy $(APP_DIR)
 
 
-# Convert Firefox DB file into URLs text file.
+# Convert raw history to filtered text files of just Bing creator URLs.
+chrome:
+	[[ -f $(CHROME_INPUT_PATH) ]] || { echo 'Cannot find $(CHROME_INPUT_PATH)'; exit 1 ;}
+
+	sqlite3 $(CHROME_INPUT_PATH) \
+		"SELECT url FROM moz_places WHERE url LIKE '$(BING_CREATE_URL)%'" \
+			| cut -f1 -d? > $(CHROME_OUT_PATH)
+
+	@echo "File created at: $(CHROME_OUT_PATH)"
+	@echo "With line count:"
+	@wc -l < "$(CHROME_OUT_PATH)"
+
 firefox:
 	[[ -f $(FIREFOX_INPUT_PATH) ]] || { echo 'Cannot find $(FIREFOX_INPUT_PATH)'; exit 1 ;}
 
@@ -85,7 +96,6 @@ firefox:
 	@echo "With line count:"
 	@wc -l < "$(FIREFOX_OUTPUT_PATH)"
 
-# Convert Edge CSV into URLs text file.
 edge:
 	[[ -f $(EDGE_INPUT_PATH) ]] || { echo 'Cannot find $(EDGE_INPUT_PATH)'; exit 1 ;}
 

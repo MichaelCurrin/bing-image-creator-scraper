@@ -11,7 +11,7 @@ import sys
 import bs4
 
 from . import download, files, process_html
-from .config import EDGE_URLS_PATH, FIREFOX_URLS_PATH, HEADERS
+from .config import HISTORY_PROCESSED_DIR, HEADERS
 
 
 def download_for_creation_page(url: str, html: str):
@@ -27,14 +27,12 @@ def download_for_creation_page(url: str, html: str):
 def main(args: list[str]) -> None:
     """
     Main command-line entry-point.
-
-    TODO: Add flag so existing folders can be skipped if they are not empty.
     """
     if args:
         url = args.pop(0)
         urls = [url]
     else:
-        urls = files.all_urls(FIREFOX_URLS_PATH, EDGE_URLS_PATH)
+        urls = files.urls_from_text_files(HISTORY_PROCESSED_DIR)
 
     print("GET HTML FOR CREATION PAGE URLS")
     html_content = download.get_html_for_urls(urls, HEADERS)
