@@ -98,10 +98,6 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
 
     folder_path = IMG_OUTPUT_DIR / folder_name
 
-    if folder_path.exists():
-        print("Skipping - exists")
-        return
-
     folder_path.mkdir(parents=True)
 
     metadata_txt = f"{url}\n{prompt.strip()}"
