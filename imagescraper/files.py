@@ -42,7 +42,7 @@ def urls_from_text_files(dir_path: Path) -> list[str]:
 
     assert urls, f"No files found or files are empty directory:\n {dir_path}"
 
-    urls = [url.split("?")[0] for url in urls]
+    urls = [url.split("?")[0] for url in urls if url]
 
     unique_urls = set(urls)
     urls = sorted(unique_urls)
