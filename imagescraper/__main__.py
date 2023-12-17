@@ -11,7 +11,7 @@ import sys
 import bs4
 
 from . import download, files, process_html
-from .config import HISTORY_PROCESSED_DIR, HEADERS
+from .config import HEADERS, HISTORY_PROCESSED_DIR, IMG_OUTPUT_DIR
 
 
 def download_for_creation_page(url: str, html: str):
@@ -32,7 +32,7 @@ def main(args: list[str]) -> None:
         url = args.pop(0)
         urls = [url]
     else:
-        urls = files.urls_from_text_files(HISTORY_PROCESSED_DIR)
+        urls = files.urls_from_text_files(HISTORY_PROCESSED_DIR, IMG_OUTPUT_DIR)
 
     print(f"Found URLs: {len(urls)}")
 
