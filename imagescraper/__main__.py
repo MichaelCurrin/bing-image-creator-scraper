@@ -34,6 +34,8 @@ def main(args: list[str]) -> None:
     else:
         urls = files.urls_from_text_files(HISTORY_PROCESSED_DIR)
 
+    print(f"Found URLs: {len(urls)}")
+
     print("GET HTML FOR CREATION PAGE URLS")
     html_content = download.get_html_for_urls(urls, HEADERS)
     print()
