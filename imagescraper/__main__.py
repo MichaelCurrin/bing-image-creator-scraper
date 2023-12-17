@@ -36,6 +36,7 @@ def main(args: list[str]) -> None:
 
     print("GET HTML FOR CREATION PAGE URLS")
     html_content = download.get_html_for_urls(urls, HEADERS)
+    print()
 
     print("GET PROMPT AND IMAGE URLS AND DOWNLOAD")
     for url, html in html_content.items():
