@@ -78,19 +78,19 @@ chrome:
 	[[ -f $(CHROME_INPUT_PATH) ]] || { echo 'Cannot find $(CHROME_INPUT_PATH)'; exit 1 ;}
 
 	sqlite3 $(CHROME_INPUT_PATH) \
-		"SELECT url FROM moz_places WHERE url LIKE '$(BING_CREATE_URL)%'" \
-			| cut -f1 -d? > $(CHROME_OUT_PATH)
+		"SELECT url FROM urls WHERE url LIKE '$(BING_CREATE_URL)%'" \
+			> "$(CHROME_OUTPUT_PATH)"
 
-	@echo "File created at: $(CHROME_OUT_PATH)"
+	@echo "File created at: $(CHROME_OUTPUT_PATH)"
 	@echo "With line count:"
-	@wc -l < "$(CHROME_OUT_PATH)"
+	@wc -l < "$(CHROME_OUTPUT_PATH)"
 
 firefox:
 	[[ -f $(FIREFOX_INPUT_PATH) ]] || { echo 'Cannot find $(FIREFOX_INPUT_PATH)'; exit 1 ;}
 
 	sqlite3 $(FIREFOX_INPUT_PATH) \
 		"SELECT url FROM moz_places WHERE url LIKE '$(BING_CREATE_URL)%'" \
-			| cut -f1 -d? > $(FIREFOX_OUTPUT_PATH)
+			> "$(FIREFOX_OUTPUT_PATH)"
 
 	@echo "File created at: $(FIREFOX_OUTPUT_PATH)"
 	@echo "With line count:"
