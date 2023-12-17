@@ -5,6 +5,7 @@ Read files of URLs.
 """
 
 from pathlib import Path
+from .config import BING_CREATE_URL
 
 
 def _read_file(path: Path) -> list[str]:
@@ -21,6 +22,20 @@ def _read_file(path: Path) -> list[str]:
             results.append(line)
 
     return results
+
+
+def _is_creation_url(url: str) -> bool:
+    """
+    Check if the URL matches the creation URL pattern.
+    In particular to ignore `https://www.bing.com/images/create/termsofservice`
+    and similar.
+    """
+    end = url.removeprefix(BING_CREATE_URL)
+
+    if len(end.split("/")) == 2:
+        return True
+
+    return False
 
 
 def urls_from_text_files(dir_path: Path) -> list[str]:
@@ -42,7 +57,7 @@ def urls_from_text_files(dir_path: Path) -> list[str]:
 
     assert urls, f"No files found or files are empty directory:\n {dir_path}"
 
-    urls = [url.split("?")[0] for url in urls if url]
+    urls = [url.split("?")[0] for url in urls if url and _is_creation_url(url)]
 
     unique_urls = set(urls)
     urls = sorted(unique_urls)

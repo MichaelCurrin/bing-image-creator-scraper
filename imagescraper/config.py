@@ -9,6 +9,8 @@ VAR_DIR = APP_DIR / Path("var")
 HISTORY_PROCESSED_DIR = VAR_DIR / "history_processed"
 IMG_OUTPUT_DIR = VAR_DIR / "creations"
 
+BING_CREATE_URL = "https://www.bing.com/images/create/"
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101"
     " Firefox/117.0",
