@@ -1,27 +1,22 @@
 # Browser history
 
-Follow steps for one or all browsers.
+Follow steps for one or all browsers. Follow the first section to add the history to the repo and then follow the section at the end to filter the history and convert to text files.
 
-## Chrome
+
+## Export history
+
+### Chrome
 
 1. Open the file explorer.
 1. Navigate here:
     ```
-    C:\Users\<username>\\AppData\Local\Google\Chrome\User Data\
+    C:\Users\<username>\AppData\Local\Google\Chrome\User Data\
     ```
-1. Go into the appropriate user. The first one is `Default`.
+1. Go into the appropriate user directory. The first user will be called `Default`.
 1. Find the `History` file, which is a SQLite database.
-1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory and keep the name the same.
-1. Get relevant URLs out and write to a text file by using this command:
-    ```sh
-    make chrome
-    ```
-1. View the output file here:
-    ```
-    imagescraper/var/browser_processed/chrome_urls.txt
-    ```
+1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory named `chome.db`.
 
-## Firefox
+### Firefox
 
 1. Open the file explorer.
 1. Go to your Firefox profiles directory. Here is the directory in Windows. Note that `AppData` is usually hidden so it's best to enter this path in your file browser.
@@ -30,20 +25,26 @@ Follow steps for one or all browsers.
     ```
 1. Find the relevant directory for your profile and go into it.
 1. Find the `places.sqlite` file, which is a SQLite database.
-1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory and keep the name the same.
-1. Get relevant URLs out and write to a text file by using this command:
-    ```sh
-    make firefox
-    ```
-1. View the output file here:
-    ```
-    imagescraper/var/browser_processed/firefox_urls.txt
-    ```
+1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory and name it `firefox.db`.
 
-## Edge
+### Edge
 
 1. Open Edge.
 1. Go to History (<kbd>CTRL</kbd>+<kbd>H</kbd>).
-1. click the menu (three dots).
+1. Click the menu (three dots).
 1. Click _Export browsing history_.
-1. Click to confirm and pick the location in the repo as `imagescraper/var/history_raw/EdgeHistory.csv`.
+1. Click to confirm.
+1. Pick the location in the repo as `imagescraper/var/history_raw/` and name as `edge.csv`.
+
+
+## Filter history
+
+Get relevant URLs out and write to a text file.
+
+```sh
+make chrome
+make firefox
+make edge
+```
+
+View the results as text files here: [imagescraper/var/browser_processed/](/imagescraper/var/browser_processed/).
