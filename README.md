@@ -35,7 +35,7 @@ For info on Bing Image Creator and this app's installation and usage instruction
 
 No license is provided - this repo is closed for reuse and sharing of code except by anyone added as a collaborator.
 
-Use of this tool is at your own risk and this tool provides no guarantee or warranty around scraping process or what you do with the images. Be responsible.
+Use of this tool is at your own risk and this tool provides no guarantee or warranty or protection around the scraping process or what you do with the images. Be responsible - see the section below.
 
 
 ## Is web scraping legal?
