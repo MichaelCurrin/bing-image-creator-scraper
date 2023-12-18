@@ -45,19 +45,23 @@ def _slugify(value: str) -> str:
 
 def _as_folder_name(prompt: str, uuid: str) -> str:
     """
-    Make a folder name as a short prompt and hash.
+    Make a folder name as a short prompt and Bing's creation UUID.
 
     The first part is a short slug form of the prompt to keep it readable.
+    Note some URLs are much longer and also Chrome history has dash as encoded
+    character. So this is a standard slug, instead of relying on the text within
+    a URL.
+
     There may be some duplication across creations where the front part is the
     same, so to ensure they are kept unique where separate based on the
-    Bing creation UUID.
+    Bing creation UUID. Note that slicing the UUID to be short was not sufficient
+    in an earlier attempt as Bing repeats the start of a UUID for creations
+    which have similar prompts.
     """
     prompt_slug = _slugify(prompt)
     prompt_slug = prompt_slug[:CREATION_DIR_NAME_MAX_LENGTH]
 
-    short_uuid = uuid[:8]
-
-    return f"{prompt_slug}-{short_uuid}"
+    return f"{prompt_slug}-{uuid}"
 
 
 def _get_html(url: str, headers: dict[str, str]) -> str:
