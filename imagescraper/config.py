@@ -8,6 +8,8 @@ APP_DIR = Path(__file__).parent
 VAR_DIR = APP_DIR / Path("var")
 HISTORY_PROCESSED_DIR = VAR_DIR / "history_processed"
 IMG_OUTPUT_DIR = VAR_DIR / "creations"
+LOG_PATH = VAR_DIR / "log" / "activity.log"
+
 
 BING_CREATE_URL = "https://www.bing.com/images/create/"
 
@@ -16,5 +18,7 @@ HEADERS = {
     " Firefox/117.0",
 }
 
-CREATION_DIR_NAME_MAX_LENGTH = 40
+# Based on Bing's URLs.
+CREATION_DIR_NAME_MAX_LENGTH = 50
+
 TIMEOUT = 5
