@@ -1,6 +1,25 @@
 # Browser history
 
-Follow steps for Firefox or Edge or both.
+Follow steps for one or all browsers.
+
+## Chrome
+
+1. Open the file explorer.
+1. Navigate here:
+    ```
+    C:\Users\<username>\\AppData\Local\Google\Chrome\User Data\
+    ```
+1. Go into the appropriate user. The first one is `Default`.
+1. Find the `History` file, which is a SQLite database.
+1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory and keep the name the same.
+1. Get relevant URLs out and write to a text file by using this command:
+    ```sh
+    make chrome
+    ```
+1. View the output file here:
+    ```
+    imagescraper/var/browser_processed/chrome_urls.txt
+    ```
 
 ## Firefox
 
@@ -10,9 +29,9 @@ Follow steps for Firefox or Edge or both.
     C:\Users\<username>\AppData\Roaming\Mozilla\Firefox\Profiles
     ```
 1. Find the relevant directory for your profile and go into it.
-1. Find the `places.sqlite` file.
-1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory.
-1. Get relevant URLs out and write to a text file using this command:
+1. Find the `places.sqlite` file, which is a SQLite database.
+1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory and keep the name the same.
+1. Get relevant URLs out and write to a text file by using this command:
     ```sh
     make firefox
     ```
