@@ -15,8 +15,8 @@ def _read_file(path: Path) -> list[str]:
     """
     results = []
 
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
+    with open(path, "r", encoding="utf-8") as text_file:
+        for line in text_file:
             line = line.strip()
             if not line:
                 continue
@@ -43,11 +43,11 @@ def _get_seen_urls(path: Path) -> set:
     """
     Get all URLs which appear in text files for existing creation folders.
     """
-    txt_files = path.glob("*/*.txt")
+    text_files = path.glob("*/*.txt")
     seen_urls = set()
 
-    for f in txt_files:
-        text = f.read_text().splitlines()
+    for text_file in text_files:
+        text = text_file.read_text().splitlines()
         url = text[0]
         seen_urls.add(url)
 
@@ -67,8 +67,8 @@ def urls_from_text_files(url_files_dir: Path, creations_dir: Path) -> list[str]:
 
     urls = []
 
-    for f in text_files:
-        lines = f.read_text().splitlines()
+    for text_file in text_files:
+        lines = text_file.read_text().splitlines()
         urls.extend(lines)
 
     assert urls, f"No files found or files are empty directory:\n {url_files_dir}"
