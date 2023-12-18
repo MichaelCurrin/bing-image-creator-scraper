@@ -1,6 +1,11 @@
 # Bing Image Creator Scraper
 > Bulk-download your AI images and prompts created with Bing, based on relevant URLs you provide from your browser history
 
+[![OS - Linux](https://img.shields.io/badge/OS-Linux-blue?logo=linux&logoColor=white)](https://www.linux.org/ "Go to Linux homepage")
+[![Made with Python](https://img.shields.io/badge/Python->=3.6-blue?logo=python&logoColor=white)](https://python.org "Go to Python homepage")
+[![GitHub tag](https://img.shields.io/github/tag/MichaelCurrin/bing-image-creator-scraper?include_prereleases=&sort=semver&color=blue)](https://github.com/MichaelCurrin/bing-image-creator-scraper/releases/)
+
+
 ## How it works
 
 1. Make creations with Bing Image Creator.
@@ -15,9 +20,15 @@ You are **not** guaranteed to get all images. Whether you use this scraper or na
 From _Frequently asked questions_ on the creations page, "Your images will be stored for up to 90 days". So use this tool to get them now!
 
 
-## Docs
+## Documentation
 
-For info on Bing Image Creator and this app's installation and usage instructions, see the [docs](/docs/).
+For info on Bing Image Creator and this app's installation and usage instructions, see the docs.
+
+<div align="center">
+
+[![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](/docs/ "Go to project documentation")
+
+</div>
 
 
 ## License
