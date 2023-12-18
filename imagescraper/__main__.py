@@ -17,13 +17,14 @@ Note on logic for retries:
     - To retry a specific case, delete file `metadata.txt` file or the whole
       directory for that creation.
 """
-import sys
 import logging
+import sys
 
 import bs4
 
 from . import download, files, process_html
 from .config import HEADERS, HISTORY_PROCESSED_DIR, IMG_OUTPUT_DIR, LOG_PATH
+
 
 # Configure logging to save errors to a file
 logging.basicConfig(
@@ -63,7 +64,7 @@ def main(args: list[str]) -> None:
     for url, html in html_content.items():
         try:
             download_for_creation_page(url, html)
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             logging.exception("Failed to download for %s", url)
 
 
