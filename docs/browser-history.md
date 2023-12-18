@@ -4,7 +4,8 @@ Follow steps for Firefox or Edge or both.
 
 ## Firefox
 
-1. Go to your Firefox profiles. Here is the directory in Windows. Note that `AppData` is usually hidden so it's best to enter this path in your file browser.
+1. Open the file explorer.
+1. Go to your Firefox profiles directory. Here is the directory in Windows. Note that `AppData` is usually hidden so it's best to enter this path in your file browser.
     ```
     C:\Users\<username>\AppData\Roaming\Mozilla\Firefox\Profiles
     ```
@@ -22,6 +23,7 @@ Follow steps for Firefox or Edge or both.
 
 ## Edge
 
+1. Open Edge.
 1. Go to History (<kbd>CTRL</kbd>+<kbd>H</kbd>).
 1. click the menu (three dots).
 1. Click _Export browsing history_.
