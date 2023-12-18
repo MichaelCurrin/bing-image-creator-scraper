@@ -104,14 +104,13 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
     print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_DIR / folder_name
-
     folder_path.mkdir(parents=True, exist_ok=True)
-
-    metadata_txt = f"{url}\n{prompt.strip()}"
-    metadata_path = folder_path / METADATA_NAME
-    metadata_path.write_text(metadata_txt)
 
     for i, image_url in enumerate(image_urls):
         file_path = folder_path / f"{uuid}_{i + 1}.png"
         response = requests.get(image_url, timeout=TIMEOUT)
         file_path.write_bytes(response.content)
+
+    metadata_txt = f"{url}\n{prompt.strip()}"
+    metadata_path = folder_path / METADATA_NAME
+    metadata_path.write_text(metadata_txt)
