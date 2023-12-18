@@ -110,8 +110,16 @@ edge:
 run:
 	python -m imagescraper
 
+
+one:
+ifeq ($(URL),)
+	$(error URL is not set. Please set URL=value)
+endif
+	python -m imagescraper $(URL)
+
 debug:
 	python -m imagescraper $(DEBUG_TEST_URL)
+
 
 # How many creation folders exist.
 count:
