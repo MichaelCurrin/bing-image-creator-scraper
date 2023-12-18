@@ -1,16 +1,10 @@
 # Installation
 
+Clone the repo then continue below.
 
 ## Project requirements
 
 - [Python](https://www.python.org/) >= 3.10
-
-
-## Install hooks
-
-```sh
-$ make hooks
-```
 
 
 ## Install system dependencies
