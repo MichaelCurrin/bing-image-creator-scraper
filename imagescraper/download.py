@@ -92,8 +92,11 @@ def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str
 
 def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
     """
-    Download image URLs for a creation page to a folder and make a text file
-    containing the metadata.
+    Download image URLs for a creation page to a folder and then make a text file
+    containing the metadata
+
+    The presence of the file also indicates the images were downloaded successfully
+    and so this creation can be a skipped on a rerun.
     """
     uuid = _uuid_from_url(url)
 
