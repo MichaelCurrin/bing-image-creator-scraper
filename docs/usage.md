@@ -23,6 +23,12 @@ Run application to scrape all data for text file of URLs. If you have Firefox an
 $ make run
 ```
 
+Target a specific URL, with example:
+
+```sh
+$ make one URL=https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
+```
+
 Count your creations:
 
 ```sh
