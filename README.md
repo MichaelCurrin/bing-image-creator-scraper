@@ -9,11 +9,11 @@
 ## How it works
 
 1. Make creations with Bing Image Creator.
-1. Go through each browser (Firefox and Edge) on each computer where you use Bing Image Creator to create images and export the history.
-1. Provide the history files to this app and it will extract only the relevant URLs. _Note the app does not care about your history besides URLS containing the Bing domain, so your history is kept private - see [Makefile](/Makefile)._
-1. Then you scrape with this Python tool to get all the prompts and images downloaded. That you should cover everything you ever created (as long as you didn't clear your history and nothing expired on Bing's side).
+1. For each browser (Firefox and Edge) on each computer where you use Bing Image Creator to create images, export your browsing history history.
+1. Provide the history files to this app so it will extract only the relevant URLs. _Note the app does not care about your history besides URLS containing the Bing domain, so your history is kept private - see `edge` and `firefox` in [Makefile](/Makefile) for Bash and SQLite commands._
+1. Use the Python part of the tool to get all the prompts and images downloaded. That you should cover everything you ever created (as long as you didn't clear your history and nothing expired on Bing's side).
 
-### Can I get all images?
+### Can I get every single image I made?
 
 You are **not** guaranteed to get all images. Whether you use this scraper or navigate directly in the browser, some of the images appear as not available. It seems like Bing removes older creations from its storage. You can of course use the prompt to make new images which are close to the ones that you made before._
 
