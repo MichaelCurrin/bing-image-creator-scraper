@@ -98,7 +98,7 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
 
     folder_path = IMG_OUTPUT_DIR / folder_name
 
-    folder_path.mkdir(parents=True)
+    folder_path.mkdir(parents=True, exist_ok=True)
 
     metadata_txt = f"{url}\n{prompt.strip()}"
     metadata_path = folder_path / METADATA_NAME
