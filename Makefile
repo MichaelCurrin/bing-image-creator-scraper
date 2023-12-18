@@ -1,16 +1,18 @@
 SHELL = /bin/bash
 APP_DIR = imagescraper
+
 VAR_DIR = $(APP_DIR)/var
-
-FIREFOX_INPUT_PATH = $(VAR_DIR)/history_raw/places.sqlite
-EDGE_INPUT_PATH = $(VAR_DIR)/history_raw/EdgeHistory.csv
-
-FIREFOX_OUTPUT_PATH = $(VAR_DIR)/history_processed/firefox_urls.txt
-EDGE_OUTPUT_PATH = $(VAR_DIR)/history_processed/edge_urls.txt
 IMG_OUTPUT_PATH = $(VAR_DIR)/creations
 
-BING_CREATE_URL = https://www.bing.com/images/create/
+CHROME_INPUT_PATH = $(VAR_DIR)/history_raw/chrome.db
+FIREFOX_INPUT_PATH = $(VAR_DIR)/history_raw/firefox.db
+EDGE_INPUT_PATH = $(VAR_DIR)/history_raw/edge.csv
 
+CHROME_OUTPUT_PATH = $(VAR_DIR)/history_processed/chrome_urls.txt
+FIREFOX_OUTPUT_PATH = $(VAR_DIR)/history_processed/firefox_urls.txt
+EDGE_OUTPUT_PATH = $(VAR_DIR)/history_processed/edge_urls.txt
+
+BING_CREATE_URL = https://www.bing.com/images/create/
 DEBUG_TEST_URL = https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
 
 export PYTHONPATH
