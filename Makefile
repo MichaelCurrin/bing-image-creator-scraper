@@ -1,16 +1,18 @@
 SHELL = /bin/bash
 APP_DIR = imagescraper
+
 VAR_DIR = $(APP_DIR)/var
-
-FIREFOX_INPUT_PATH = $(VAR_DIR)/history_raw/places.sqlite
-EDGE_INPUT_PATH = $(VAR_DIR)/history_raw/EdgeHistory.csv
-
-FIREFOX_OUTPUT_PATH = $(VAR_DIR)/history_processed/firefox_urls.txt
-EDGE_OUTPUT_PATH = $(VAR_DIR)/history_processed/edge_urls.txt
 IMG_OUTPUT_PATH = $(VAR_DIR)/creations
 
-BING_CREATE_URL = https://www.bing.com/images/create/
+CHROME_INPUT_PATH = $(VAR_DIR)/history_raw/chrome.db
+FIREFOX_INPUT_PATH = $(VAR_DIR)/history_raw/firefox.db
+EDGE_INPUT_PATH = $(VAR_DIR)/history_raw/edge.csv
 
+CHROME_OUTPUT_PATH = $(VAR_DIR)/history_processed/chrome_urls.txt
+FIREFOX_OUTPUT_PATH = $(VAR_DIR)/history_processed/firefox_urls.txt
+EDGE_OUTPUT_PATH = $(VAR_DIR)/history_processed/edge_urls.txt
+
+BING_CREATE_URL = https://www.bing.com/images/create/
 DEBUG_TEST_URL = https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
 
 export PYTHONPATH
@@ -71,19 +73,29 @@ t typecheck:
 	mypy $(APP_DIR)
 
 
-# Convert Firefox DB file into URLs text file.
+# Convert raw history to filtered text files of just Bing creator URLs.
+chrome:
+	[[ -f $(CHROME_INPUT_PATH) ]] || { echo 'Cannot find $(CHROME_INPUT_PATH)'; exit 1 ;}
+
+	sqlite3 $(CHROME_INPUT_PATH) \
+		"SELECT url FROM urls WHERE url LIKE '$(BING_CREATE_URL)%'" \
+			> "$(CHROME_OUTPUT_PATH)"
+
+	@echo "File created at: $(CHROME_OUTPUT_PATH)"
+	@echo "With line count:"
+	@wc -l < "$(CHROME_OUTPUT_PATH)"
+
 firefox:
 	[[ -f $(FIREFOX_INPUT_PATH) ]] || { echo 'Cannot find $(FIREFOX_INPUT_PATH)'; exit 1 ;}
 
 	sqlite3 $(FIREFOX_INPUT_PATH) \
 		"SELECT url FROM moz_places WHERE url LIKE '$(BING_CREATE_URL)%'" \
-			| cut -f1 -d? > $(FIREFOX_OUTPUT_PATH)
+			> "$(FIREFOX_OUTPUT_PATH)"
 
 	@echo "File created at: $(FIREFOX_OUTPUT_PATH)"
 	@echo "With line count:"
 	@wc -l < "$(FIREFOX_OUTPUT_PATH)"
 
-# Convert Edge CSV into URLs text file.
 edge:
 	[[ -f $(EDGE_INPUT_PATH) ]] || { echo 'Cannot find $(EDGE_INPUT_PATH)'; exit 1 ;}
 

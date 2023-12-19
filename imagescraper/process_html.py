@@ -64,6 +64,4 @@ def process_creation_page(url: str, soup: bs4.BeautifulSoup) -> tuple[str, list[
 
     assert image_urls, f"Expected at least one image URL for CSS selectors at {url}"
 
-    print("Image URLs", image_urls)
-
     return prompt, image_urls

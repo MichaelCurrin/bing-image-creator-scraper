@@ -7,7 +7,7 @@ import re
 
 import requests
 
-from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_PATH, TIMEOUT
+from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_DIR, TIMEOUT
 
 
 METADATA_NAME = "metadata.txt"
@@ -96,11 +96,7 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
     folder_name = _as_folder_name(prompt, uuid)
     print("Folder name", folder_name)
 
-    folder_path = IMG_OUTPUT_PATH / folder_name
-
-    if folder_path.exists():
-        print("Skipping:", folder_name)
-        return
+    folder_path = IMG_OUTPUT_DIR / folder_name
 
     folder_path.mkdir(parents=True)
 

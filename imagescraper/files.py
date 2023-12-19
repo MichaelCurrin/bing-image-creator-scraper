@@ -6,6 +6,8 @@ Read files of URLs.
 
 from pathlib import Path
 
+from .config import BING_CREATE_URL
+
 
 def _read_file(path: Path) -> list[str]:
     """
@@ -23,34 +25,60 @@ def _read_file(path: Path) -> list[str]:
     return results
 
 
-def all_urls(firefox_path: Path, edge_path: Path) -> list[str]:
+def _is_creation_url(url: str) -> bool:
     """
-    Read URLs from Firefox and Edge text files if they exist and return combined
-    URLs list.
-
-    Query parameters will be removed.
-
-    Assume duplicates are possible within the files and across the files,
-    especially two identical URLs and the one has query parameters which
-    are meaningless for scraping purposes. e.g. '...891?FORM=GLP2CR'.
+    Check if the URL matches the creation URL pattern.
+    In particular to ignore `https://www.bing.com/images/create/termsofservice`
+    and similar.
     """
-    assert (
-        firefox_path.exists() or edge_path.exists()
-    ), "Unable to find either the Firefox or Edge files of URLs"
+    end = url.removeprefix(BING_CREATE_URL)
+
+    if len(end.split("/")) == 2:
+        return True
+
+    return False
+
+
+def _get_seen_urls(path: Path) -> set:
+    """
+    Get all URLs which appear in text files for existing creation folders.
+    """
+    txt_files = path.glob("*/*.txt")
+    seen_urls = set()
+
+    for f in txt_files:
+        text = f.read_text().splitlines()
+        url = text[0]
+        seen_urls.add(url)
+
+    return seen_urls
+
+
+def urls_from_text_files(url_files_dir: Path, creations_dir: Path) -> list[str]:
+    """
+    Read URLs from text files in the given directory.
+
+    Query parameters and duplicates will be removed. Note, sometimes unnecessary
+    query parameters appear like this
+        '...891?FORM=GLP2CR'.
+    """
+    print(f"Reading files in: {url_files_dir}")
+    text_files = url_files_dir.glob("*.txt")
 
     urls = []
-    if firefox_path.exists():
-        firefox_urls = _read_file(firefox_path)
-        assert firefox_urls, "Firefox URLs text file cannot be empty"
-        urls.extend(firefox_urls)
 
-    if edge_path.exists():
-        edge_urls = _read_file(edge_path)
-        assert edge_urls, "Edge URLs text file cannot be empty"
-        urls.extend(edge_urls)
+    for f in text_files:
+        lines = f.read_text().splitlines()
+        urls.extend(lines)
 
-    urls = [url.split("?")[0] for url in urls]
+    assert urls, f"No files found or files are empty directory:\n {url_files_dir}"
+
+    urls = [url.split("?")[0] for url in urls if url and _is_creation_url(url)]
+
     unique_urls = set(urls)
+    seen_urls = _get_seen_urls(creations_dir)
+    unique_urls = unique_urls - seen_urls
+
     urls = sorted(unique_urls)
 
     return urls
