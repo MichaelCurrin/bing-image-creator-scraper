@@ -27,6 +27,9 @@ Follow steps for one or all browsers. Follow the first section to add the histor
 1. Find the `places.sqlite` file, which is a SQLite database.
 1. Copy that file into this repo in the `imagescraper/var/browser_raw` directory and name it `firefox.db`.
 
+Alternatively, you can use a symbolic link that points to the DB so you always have access to the latest data without a copy step needed. You just have to close Firefox because you run queries against the file, to avoid an I/O error.
+
+
 ### Edge
 
 1. Open Edge.
