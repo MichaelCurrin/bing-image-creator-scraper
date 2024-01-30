@@ -15,8 +15,6 @@ EDGE_OUTPUT_PATH = $(VAR_DIR)/history_processed/edge_urls.txt
 BING_CREATE_URL = https://www.bing.com/images/create/
 DEBUG_TEST_URL = https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
 
-export PYTHONPATH
-
 
 default: install install-dev
 
@@ -24,7 +22,7 @@ all:  install install-dev fmt-check lint typecheck
 
 
 h help:
-	@grep '^[a-z]' Makefile
+	@grep '^[a-z]' Makefile | grep -vE 'ifeq|ifneq|endif'
 
 
 .PHONY: hooks
@@ -54,8 +52,7 @@ fmt-check:
 	isort . --diff --check-only
 
 pylint:
-	source .env \
-		&& pylint $(APP_DIR) \
+	pylint $(APP_DIR) \
 		|| pylint-exit $$?
 
 flake8:
