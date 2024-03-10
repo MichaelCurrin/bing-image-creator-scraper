@@ -12,18 +12,18 @@ $ make help
 
 ## Browser history
 
-Follow the steps in [Browser history](browser-history.md) to prepare your data.
+Follow the steps in [Browser history](browser-history.md) to make the data available for the scraping application. That will write out text files to the `history_process` directory.
 
 
 ## Run
 
-Run application to scrape all data for text file of URLs. If you have Firefox and Edge URLs, all will be used.
+Run the application to scrape all the URLs across all the text files in the `history_process` directory.
 
 ```sh
 $ make run
 ```
 
-Target a specific URL, with example:
+Target a specific URL, for example:
 
 ```sh
 $ make one URL=https://www.bing.com/images/create/a-beautiful-purple-and-yellow-flower-with-water-dr/651328ae9a6646c9b1b66c9a26c1bf2f
