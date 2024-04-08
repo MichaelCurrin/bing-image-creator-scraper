@@ -3,11 +3,12 @@ Download module.
 
 Request HTML and download images and metadata.
 """
+
 import re
 
 import requests
 
-from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_DIR, TIMEOUT
+from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_DIR, TIMEOUT, APP_DIR
 
 
 METADATA_NAME = "metadata.txt"
@@ -101,9 +102,10 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
     uuid = _uuid_from_url(url)
 
     folder_name = _as_folder_name(prompt, uuid)
-    print("Folder name", folder_name)
 
     folder_path = IMG_OUTPUT_DIR / folder_name
+    print("Folder path", folder_path.relative_to(APP_DIR.parent))
+
     folder_path.mkdir(parents=True, exist_ok=True)
 
     for i, image_url in enumerate(image_urls):
