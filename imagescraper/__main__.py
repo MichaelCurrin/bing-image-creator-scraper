@@ -17,6 +17,7 @@ Note on logic for retries:
     - To retry a specific case, delete file `metadata.txt` file or the whole
       directory for that creation.
 """
+
 import logging
 import sys
 
@@ -34,10 +35,12 @@ logging.basicConfig(
 )
 
 
-def download_for_creation_page(url: str, html: str):
+def download_for_creation_page(url: str, html: str) -> None:
     """
     Request images for creation page HTML and store them, with creation metadata.
     """
+    logging.info("Downloading for creation page. url: %s", url)
+
     soup = bs4.BeautifulSoup(html, "html.parser")
     prompt, image_urls = process_html.process_creation_page(url, soup)
 
@@ -58,7 +61,7 @@ def main(args: list[str]) -> None:
 
     print("GET HTML FOR CREATION PAGE URLS")
     html_content = download.get_html_for_urls(urls, HEADERS)
-    print()
+    print(f"Found HTML count: {len(html_content)}")
 
     print("GET PROMPT AND IMAGE URLS AND DOWNLOAD")
     for url, html in html_content.items():
