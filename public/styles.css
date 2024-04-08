@@ -1,0 +1,38 @@
+#app {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#app > div {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#app h2 {
+    margin-bottom: 10px;
+}
+
+#app p {
+    margin-bottom: 10px;
+}
+
+#app a {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#app img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+@media (min-width: 600px) {
+    #app > div {
+        width: 48%;
+    }
+}
