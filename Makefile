@@ -125,3 +125,10 @@ count:
 # Reset - delete all creations.
 delete:
 	rm -rf $(IMG_OUTPUT_PATH)/*
+
+
+# Build data for frontend view.
+json:
+	python -m imagescraper.to_json
+s server:
+	cd public && python -m http.server
