@@ -8,7 +8,8 @@ import re
 
 import requests
 
-from .config import CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_DIR, TIMEOUT, APP_DIR
+from .config import (APP_DIR, CREATION_DIR_NAME_MAX_LENGTH, IMG_OUTPUT_DIR,
+                     TIMEOUT)
 
 
 METADATA_NAME = "metadata.txt"
@@ -79,7 +80,7 @@ def _get_html(url: str, headers: dict[str, str]) -> str:
 
 def get_html_for_urls(urls: list[str], headers: dict[str, str]) -> dict[str, str]:
     """
-    Request URls return the HTML content for each URL.
+    For each URL, download the HTML content.
     """
     html_content = {}
 
@@ -98,13 +99,21 @@ def download_images(prompt: str, url: str, image_urls: list[str]) -> None:
 
     The presence of the file also indicates the images were downloaded successfully
     and so this creation can be a skipped on a rerun.
+
+    Note, there is an edgecase where in the input text files, the same UUID
+    from Bing can appear in different URLs with different URL but the same prompt.
+
+    This function will not recognize one of the two as seen so it will always
+    write to it. This is because we build our own folder name using the prompt
+    instead of the original URL. This is not worth fixing as it is unlikely
+    as does not have an impact. Just remove the unnecessary URLs from the source.
     """
     uuid = _uuid_from_url(url)
 
     folder_name = _as_folder_name(prompt, uuid)
 
     folder_path = IMG_OUTPUT_DIR / folder_name
-    print("Folder path", folder_path.relative_to(APP_DIR.parent))
+    print("Downloading to folder path", folder_path.relative_to(APP_DIR.parent))
 
     folder_path.mkdir(parents=True, exist_ok=True)
 
