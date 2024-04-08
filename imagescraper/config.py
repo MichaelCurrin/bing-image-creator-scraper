@@ -1,15 +1,18 @@
 """
 Config module.
 """
+
 from pathlib import Path
 
 
 APP_DIR = Path(__file__).parent
-VAR_DIR = APP_DIR / Path("var")
+VAR_DIR = APP_DIR / "var"
 HISTORY_PROCESSED_DIR = VAR_DIR / "history_processed"
 IMG_OUTPUT_DIR = VAR_DIR / "creations"
 LOG_PATH = VAR_DIR / "log" / "activity.log"
 
+WEB_APP_DIR = APP_DIR.parent / "public"
+WEB_APP_DATA = WEB_APP_DIR / "creation-data.json"
 
 BING_CREATE_URL = "https://www.bing.com/images/create/"
 
