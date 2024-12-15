@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from .config import IMG_OUTPUT_DIR, WEB_APP_DATA, VAR_DIR
+from .config import IMG_OUTPUT_DIR, VAR_DIR, WEB_APP_DATA
 
 
 FolderData = dict[str, str | list[str]]
